@@ -229,7 +229,7 @@ export default function Home() {
           <section className="planner">
             <div className="intro">
               <p className="eyebrow"><Sparkles size={15} /> 2026 · 09.25 出发</p>
-              <h1>刷到心动，<br />就去贵州吧！</h1>
+              <h1>黔</h1>
               <div className="route-line"><TrainFront size={18} /><strong>深圳北</strong><span>→</span><strong>贵阳北</strong><span>→</span><strong>兴义</strong></div>
               <p className="intro-copy">按住处所在城区整理景点与美食。贵阳房源标题和地址存在差异，出发前请再用地图核对实际车程。</p>
               <div className="filter-row" aria-label="筛选卡片">
