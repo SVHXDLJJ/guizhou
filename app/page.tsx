@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Camera, ChevronDown, Heart, MapPin, Plus, RotateCcw,
+  Camera, Heart, MapPin, Plus, RotateCcw, Shuffle,
   Sparkles, Trash2, TrainFront, UtensilsCrossed,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -35,18 +35,28 @@ type Wish = {
 const guiyangImage = 'https://commons.wikimedia.org/wiki/Special:FilePath/Guiyang_Skyline.jpg?width=1600';
 const xingyiImage = 'https://commons.wikimedia.org/wiki/Special:FilePath/Wan_Feng_Lin_River.jpg?width=1600';
 const foodImage = '/images/guizhou-foods.png';
+const xhsKarst = '/images/xhs-karst.webp';
+const xhsGuanshan = '/images/xhs-guanshan.webp';
+const xhsChangpoling = '/images/xhs-changpoling.webp';
+const xhsJilongbao = '/images/xhs-jilongbao.webp';
+const xhsXingyi = '/images/xhs-xingyi.webp';
+const xhsPuti = '/images/xhs-puti.webp';
 
 const picks: Pick[] = [
-  { id: 'guanshanhu', type: '景点', area: '贵阳住处周边', title: '观山湖公园', note: '5500 亩城市绿地，湖心栈道和白鹭很适合抵达后的松弛傍晚。', tip: '免费 · 建议 1.5–2 小时', image: guiyangImage, query: '观山湖公园 拍照机位', mapCity: '贵阳' },
+  { id: 'guanshanhu', type: '景点', area: '贵阳住处周边', title: '观山湖公园', note: '5500 亩城市绿地，湖心栈道和白鹭很适合抵达后的松弛傍晚。', tip: '免费 · 建议 1.5–2 小时', image: xhsGuanshan, query: '观山湖公园 拍照机位', mapCity: '贵阳' },
   { id: 'museum', type: '景点', area: '贵阳住处周边', title: '贵州省博物馆', note: '从民族服饰一路看到喀斯特山水，雨天安排也很舒服。', tip: '免费预约 · 周一闭馆', image: guiyangImage, query: '贵州省博物馆 打卡 攻略', mapCity: '贵阳' },
   { id: 'geology', type: '景点', area: '贵阳住处周边', title: '贵州省地质博物馆', note: '看贵州独特地貌、化石和矿物，适合喜欢自然与建筑的人。', tip: '免费 · 云潭南路 607 号', image: guiyangImage, query: '贵州省地质博物馆 拍照', mapCity: '贵阳' },
+  { id: 'karst-park', type: '景点', area: '贵阳住处周边', title: '贵阳喀斯特公园', note: '城区里的石林秘境，小红书近期笔记称它“石立千峰秀”，黄昏光线更柔和。', tip: '免费 · 适合散步拍照', image: xhsKarst, query: '贵阳 喀斯特公园 拍照', mapCity: '贵阳' },
+  { id: 'changpoling', type: '景点', area: '贵阳住处周边', title: '长坡岭森林公园', note: '森林、湖面和草地组成的低强度去处，想在到达日吸氧放空可以选这里。', tip: '轻徒步 · 预留 2 小时', image: xhsChangpoling, query: '观山湖 长坡岭森林公园', mapCity: '贵阳' },
   { id: 'qingyun', type: '美食', area: '贵阳市区专程', title: '青云市集', note: '一次打卡多种贵州小吃，适合晚上去；它在市区，不算观山湖住处附近。', tip: '夜逛 · 预留往返车程', image: foodImage, query: '青云市集 必吃 贵阳', mapCity: '贵阳' },
   { id: 'guichu', type: '美食', area: '贵阳住处周边', title: '贵厨·观山湖店', note: '小红书观山湖搜索中反复出现的贵州菜选择，适合第一晚多人聚餐。', tip: '观山湖店 · 出发前预约', image: foodImage, query: '贵厨 观山湖店 必点', mapCity: '贵阳' },
   { id: 'daihuo', type: '美食', area: '贵阳住处周边', title: '逮火烤鸡', note: '观山湖笔记和评论都提到烤鸡与泡菜；旺季上菜和排队时间可能较长。', tip: '烤鸡 · 建议错峰', image: foodImage, query: '观山湖 逮火烤鸡', mapCity: '贵阳' },
   { id: 'wanfenglin', type: '景点', area: '兴义', title: '万峰林·下纳灰村', note: '想走进稻田可直接到下纳灰村；想俯瞰八卦田和福字田，再选景区观光车。', tip: '建议半天 · 九月看稻田', image: xingyiImage, query: '万峰林 下纳灰村 九月', mapCity: '兴义' },
-  { id: 'fuyao-coffee', type: '景点', area: '兴义', title: '扶摇咖啡·吉隆堡机位', note: '小红书笔记推荐在这里拍与吉隆堡同框的城堡视角，适合顺路喝咖啡休息。', tip: '城堡机位 · 留意营业时间', image: xingyiImage, query: '兴义 扶摇咖啡 吉隆堡 机位', mapCity: '兴义' },
-  { id: 'malinghe', type: '景点', area: '兴义', title: '马岭河峡谷·打柴窝入口', note: '笔记推荐定位打柴窝入口，从桥上看瀑布群；九月雨后更壮观。', tip: '台阶较多 · 穿防滑鞋', image: xingyiImage, query: '马岭河峡谷 打柴窝入口 瀑布', mapCity: '兴义' },
+  { id: 'fuyao-coffee', type: '景点', area: '兴义', title: '扶摇咖啡·吉隆堡机位', note: '小红书笔记推荐在这里拍与吉隆堡同框的城堡视角，适合顺路喝咖啡休息。', tip: '城堡机位 · 留意营业时间', image: xhsJilongbao, query: '兴义 扶摇咖啡 吉隆堡 机位', mapCity: '兴义' },
+  { id: 'wanfenghu', type: '景点', area: '兴义', title: '万峰湖·吉隆堡', note: '湖面、孤峰和红顶城堡同框，适合与万峰林分开安排成另一段山水路线。', tip: '看湖拍城堡 · 关注天气', image: xhsJilongbao, query: '兴义 万峰湖 吉隆堡', mapCity: '兴义' },
+  { id: 'malinghe', type: '景点', area: '兴义', title: '马岭河峡谷·打柴窝入口', note: '笔记推荐定位打柴窝入口，从桥上看瀑布群；九月雨后更壮观。', tip: '台阶较多 · 穿防滑鞋', image: xhsXingyi, query: '马岭河峡谷 打柴窝入口 瀑布', mapCity: '兴义' },
   { id: 'yuhuangding', type: '景点', area: '兴义', title: '玉皇顶·云上 House', note: '前夜下雨时更有机会看到云海，笔记建议清晨六点左右到云上 House 咖啡附近。', tip: '日出云海 · 早起看天气', image: xingyiImage, query: '玉皇顶 云上House 咖啡 日出云海', mapCity: '兴义' },
+  { id: 'puti-village', type: '景点', area: '兴义', title: '普梯古寨', note: '小红书近期出现的少数民族古寨取景地，村落与山野感更安静，适合想避开主景区的人。', tip: '小众村寨 · 尊重当地生活', image: xhsPuti, query: '兴义 普梯古寨 打卡', mapCity: '兴义' },
   { id: 'maji-beef', type: '美食', area: '兴义', title: '马记小黄牛牛肉馆', note: '小红书兴义美食笔记的五星首推，干锅牛肉不辣、配菜足，也适合带小朋友。', tip: '干锅牛肉 · 人气较旺', image: foodImage, query: '兴义 马记小黄牛牛肉馆', mapCity: '兴义' },
   { id: 'jingshi', type: '美食', area: '兴义', title: '景氏烙锅', note: '烙锅中间带酸汤，可涮菜也可直接喝；笔记最推荐烤小肠。', tip: '烙锅 · 适合两三人', image: foodImage, query: '兴义 景氏烙锅', mapCity: '兴义' },
   { id: 'jiujiu-mutton', type: '美食', area: '兴义', title: '九九羊肉粉', note: '清汤偏酱香，薄荷和羊肉很搭；红烧口味微辣，想清爽可点清汤。', tip: '羊肉粉 · 本地早餐感', image: foodImage, query: '兴义 九九羊肉粉', mapCity: '兴义' },
@@ -62,6 +72,7 @@ const itinerary = [
 
 export default function Home() {
   const [filter, setFilter] = useState<'全部' | '景点' | '美食'>('全部');
+  const [areaFilter, setAreaFilter] = useState<'全部' | '贵阳' | '兴义'>('全部');
   const [index, setIndex] = useState(0);
   const [saved, setSaved] = useState<string[]>([]);
   const [wishes, setWishes] = useState<Wish[]>([]);
@@ -70,8 +81,8 @@ export default function Home() {
   const touchStart = useRef<number | null>(null);
 
   const filtered = useMemo(
-    () => picks.filter((pick) => filter === '全部' || pick.type === filter),
-    [filter],
+    () => picks.filter((pick) => (filter === '全部' || pick.type === filter) && (areaFilter === '全部' || pick.mapCity === areaFilter)),
+    [filter, areaFilter],
   );
   const current = filtered[index % filtered.length];
   const savedPicks = picks.filter((pick) => saved.includes(pick.id));
@@ -92,8 +103,29 @@ export default function Home() {
     setIndex(0);
   }
 
+  function switchArea(value: '全部' | '贵阳' | '兴义') {
+    setAreaFilter(value);
+    setIndex(0);
+  }
+
+  function startChoosing(area: '全部' | '贵阳' | '兴义', type: '全部' | '景点' | '美食' = '全部') {
+    setAreaFilter(area);
+    setFilter(type);
+    setIndex(0);
+    document.getElementById('discover-card')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
   function next() {
     setIndex((value) => (value + 1) % filtered.length);
+  }
+
+  function randomPick() {
+    if (filtered.length < 2) return;
+    setIndex((value) => {
+      const currentIndex = value % filtered.length;
+      const offset = 1 + Math.floor(Math.random() * (filtered.length - 1));
+      return (currentIndex + offset) % filtered.length;
+    });
   }
 
   async function setFavorite(id: string, shouldSave: boolean) {
@@ -210,16 +242,19 @@ export default function Home() {
           <div className="hero-links">
             <a className="active" href="#top">首页</a>
             <a href="#discover-card">灵感</a>
-            <a href="#quick-look">目的地</a>
+            <a href="#discover-card">目的地</a>
             <a href="#my-list">心愿单</a>
           </div>
           <a className="liquid-glass nav-cta" href="#discover-card">开始旅程</a>
         </nav>
         <div className="hero-content">
           <p className="hero-kicker animate-fade-rise">SHENZHEN · GUIYANG · XINGYI</p>
-          <h1 className="animate-fade-rise" style={{ fontFamily: "'Instrument Serif', serif" }}>让梦穿过寂静，<br /><em>落进贵州的山雾。</em></h1>
-          <p className="hero-subtext animate-fade-rise-delay">九月二十五日，从深圳北出发。我们把想吃的、想看的和偶然心动的地方，都收进这趟旅程。</p>
-          <a className="liquid-glass hero-cta animate-fade-rise-delay-2" href="#discover-card">开始挑选地点</a>
+          <p className="hero-subtext animate-fade-rise-delay">九月二十五日，从深圳北出发。先凭感觉选一个方向，下一张卡片就替你打开。</p>
+          <div className="hero-choices animate-fade-rise-delay-2" aria-label="选择第一站">
+            <button className="liquid-glass" onClick={() => startChoosing('贵阳')}>贵阳附近</button>
+            <button className="liquid-glass" onClick={() => startChoosing('兴义', '景点')}>兴义山野</button>
+            <button className="liquid-glass" onClick={() => startChoosing('全部', '美食')}>先去吃饭</button>
+          </div>
         </div>
       </section>
 
@@ -240,6 +275,10 @@ export default function Home() {
               <div className="filter-row" aria-label="筛选卡片">
                 {(['全部', '景点', '美食'] as const).map((value) => <button key={value} className={filter === value ? 'active' : ''} onClick={() => switchFilter(value)}>{value}</button>)}
               </div>
+              <div className="filter-row area-row" aria-label="筛选城市">
+                {(['全部', '贵阳', '兴义'] as const).map((value) => <button key={value} className={areaFilter === value ? 'active' : ''} onClick={() => switchArea(value)}>{value === '全部' ? '全程' : value}</button>)}
+              </div>
+              <button className="random-button liquid-glass" onClick={randomPick}><Shuffle size={17} /> 随机抽一张</button>
             </div>
 
             <div className="swipe-zone" aria-live="polite">
@@ -248,6 +287,7 @@ export default function Home() {
                 <img src={current.image} alt={current.title} />
                 <div className="image-wash" />
                 <div className="type-sticker">{current.type === '景点' ? '🌿 去玩' : '🥢 去吃'}</div>
+                {current.image.includes('/images/xhs-') && <div className="xhs-sticker">小红书灵感图</div>}
                 <div className="pick-copy">
                   <span className="place-tag"><MapPin size={14} /> {current.area}</span>
                   <h2>{current.title}</h2><p>{current.note}</p><span className="time-chip">{current.tip}</span>
@@ -259,12 +299,8 @@ export default function Home() {
                 <Button className="round-button love" aria-label="收藏这个地点" onClick={loveCurrent}><Heart size={25} fill="currentColor" /></Button>
               </div>
               <p className="gesture-tip">左滑换一个 · 右滑收进心愿单</p>
+              <p className="card-progress">{(index % filtered.length) + 1} / {filtered.length}</p>
             </div>
-          </section>
-          <a className="scroll-cue" href="#quick-look"><span>往下看全部</span><ChevronDown /></a>
-          <section className="quick-look" id="quick-look">
-            <div className="section-heading"><p className="eyebrow">一眼看完</p><h2>景点和美食都在这里</h2></div>
-            <div className="tile-grid">{picks.map((pick) => <article className="place-tile" key={pick.id}><img src={pick.image} alt="" /><div><span>{pick.area} · {pick.type}</span><h3>{pick.title}</h3><p>{pick.tip}</p><div className="tile-actions"><a href={`https://uri.amap.com/search?keyword=${encodeURIComponent(pick.title)}&city=${encodeURIComponent(pick.mapCity)}`} target="_blank" rel="noreferrer">地图</a><button aria-label={`收藏${pick.title}`} className={saved.includes(pick.id) ? 'selected' : ''} onClick={() => void setFavorite(pick.id, !saved.includes(pick.id))}><Heart size={18} fill={saved.includes(pick.id) ? 'currentColor' : 'none'} /></button></div></div></article>)}</div>
           </section>
         </TabsContent>
 
@@ -291,7 +327,7 @@ export default function Home() {
         </TabsContent>
       </Tabs>
 
-      <section className="source-note"><UtensilsCrossed /><p>景点信息参考官方资料；美食与拍照机位已在 2026 年 9 月登录小红书检索并提炼。每张卡片都保留精准搜索入口，价格、营业时间和天气请在出发前再确认。</p></section>
+      <section className="source-note"><UtensilsCrossed /><p>景点、美食与拍照机位已在 2026 年 9 月登录小红书检索并提炼；标注“小红书灵感图”的封面来自对应公开笔记，仅用于这份私人行程参考。每张卡片都保留精准搜索入口，价格、营业时间和天气请在出发前再确认。</p></section>
       <footer>景观照片：Wikimedia Commons · Ryedamien / Philippe Semanaz · 美食图为原创生成</footer>
     </main>
   );
