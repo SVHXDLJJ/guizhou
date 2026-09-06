@@ -48,7 +48,7 @@ const picks: Pick[] = [
   { id: 'geology', type: '景点', area: '贵阳住处周边', title: '贵州省地质博物馆', note: '看贵州独特地貌、化石和矿物，适合喜欢自然与建筑的人。', tip: '免费 · 云潭南路 607 号', image: guiyangImage, query: '贵州省地质博物馆 拍照', mapCity: '贵阳' },
   { id: 'karst-park', type: '景点', area: '贵阳住处周边', title: '贵阳喀斯特公园', note: '城区里的石林秘境，小红书近期笔记称它“石立千峰秀”，黄昏光线更柔和。', tip: '免费 · 适合散步拍照', image: xhsKarst, query: '贵阳 喀斯特公园 拍照', mapCity: '贵阳' },
   { id: 'changpoling', type: '景点', area: '贵阳住处周边', title: '长坡岭森林公园', note: '森林、湖面和草地组成的低强度去处，想在到达日吸氧放空可以选这里。', tip: '轻徒步 · 预留 2 小时', image: xhsChangpoling, query: '观山湖 长坡岭森林公园', mapCity: '贵阳' },
-  { id: 'qingyun', type: '美食', area: '贵阳市区专程', title: '青云市集', note: '一次打卡多种贵州小吃，适合晚上去；它在市区，不算观山湖住处附近。', tip: '夜逛 · 预留往返车程', image: foodImage, query: '青云市集 必吃 贵阳', mapCity: '贵阳' },
+  { id: 'qingyun', type: '美食', area: '贵阳市区专程', title: '青云市集·青云路', note: '把肠旺面、豆腐圆子、烙锅和贵州小吃一次收齐，霓虹街景也很适合晚上拍照；从观山湖住处出发要预留往返时间。', tip: '夜市逛吃 · 建议晚上去', image: '/images/qingyun-market.jpg', query: '贵阳 青云市集 青云路 必吃', mapCity: '贵阳' },
   { id: 'guichu', type: '美食', area: '贵阳住处周边', title: '贵厨·观山湖店', note: '小红书观山湖搜索中反复出现的贵州菜选择，适合第一晚多人聚餐。', tip: '观山湖店 · 出发前预约', image: foodImage, query: '贵厨 观山湖店 必点', mapCity: '贵阳' },
   { id: 'daihuo', type: '美食', area: '贵阳住处周边', title: '逮火烤鸡', note: '观山湖笔记和评论都提到烤鸡与泡菜；旺季上菜和排队时间可能较长。', tip: '烤鸡 · 建议错峰', image: foodImage, query: '观山湖 逮火烤鸡', mapCity: '贵阳' },
   { id: 'wanfenglin', type: '景点', area: '兴义', title: '万峰林·下纳灰村', note: '想走进稻田可直接到下纳灰村；想俯瞰八卦田和福字田，再选景区观光车。', tip: '建议半天 · 九月看稻田', image: xingyiImage, query: '万峰林 下纳灰村 九月', mapCity: '兴义' },
@@ -287,7 +287,7 @@ export default function Home() {
                 <img src={current.image} alt={current.title} />
                 <div className="image-wash" />
                 <div className="type-sticker">{current.type === '景点' ? '🌿 去玩' : '🥢 去吃'}</div>
-                {current.image.includes('/images/xhs-') && <div className="xhs-sticker">小红书灵感图</div>}
+                {(current.image.includes('/images/xhs-') || current.image.includes('qingyun-market')) && <div className="xhs-sticker">旅行灵感图</div>}
                 <div className="pick-copy">
                   <span className="place-tag"><MapPin size={14} /> {current.area}</span>
                   <h2>{current.title}</h2><p>{current.note}</p><span className="time-chip">{current.tip}</span>
