@@ -41,12 +41,17 @@ const picks: Pick[] = [
   { id: 'museum', type: '景点', area: '贵阳住处周边', title: '贵州省博物馆', note: '从民族服饰一路看到喀斯特山水，雨天安排也很舒服。', tip: '免费预约 · 周一闭馆', image: guiyangImage, query: '贵州省博物馆 打卡 攻略', mapCity: '贵阳' },
   { id: 'geology', type: '景点', area: '贵阳住处周边', title: '贵州省地质博物馆', note: '看贵州独特地貌、化石和矿物，适合喜欢自然与建筑的人。', tip: '免费 · 云潭南路 607 号', image: guiyangImage, query: '贵州省地质博物馆 拍照', mapCity: '贵阳' },
   { id: 'qingyun', type: '美食', area: '贵阳市区专程', title: '青云市集', note: '一次打卡多种贵州小吃，适合晚上去；它在市区，不算观山湖住处附近。', tip: '夜逛 · 预留往返车程', image: foodImage, query: '青云市集 必吃 贵阳', mapCity: '贵阳' },
-  { id: 'siwawa', type: '美食', area: '贵阳住处周边', title: '丝娃娃', note: '薄饼裹满脆蔬菜，再灌一勺酸辣蘸水，第一口就很贵州。', tip: '清爽酸辣 · 可搜附近门店', image: foodImage, query: '观山湖 丝娃娃 好吃', mapCity: '贵阳' },
-  { id: 'suantang', type: '美食', area: '贵阳住处周边', title: '红酸汤火锅', note: '番茄与木姜子发酵出的酸香，涮鱼、豆腐和蔬菜都很开胃。', tip: '适合第一晚聚餐', image: foodImage, query: '观山湖 酸汤火锅 推荐', mapCity: '贵阳' },
-  { id: 'wanfenglin', type: '景点', area: '兴义', title: '万峰林', note: '两万多座锥状峰林铺进田野，九月沿纳灰河慢慢骑行很舒服。', tip: '建议半天 · 旺季 08:00–18:00', image: xingyiImage, query: '兴义万峰林 九月 路线', mapCity: '兴义' },
-  { id: 'malinghe', type: '景点', area: '兴义', title: '马岭河峡谷', note: '瀑布、峭壁和地缝峡谷一路展开，雨后水量大时很壮观。', tip: '台阶较多 · 穿防滑鞋', image: xingyiImage, query: '马岭河峡谷 游玩路线', mapCity: '兴义' },
+  { id: 'guichu', type: '美食', area: '贵阳住处周边', title: '贵厨·观山湖店', note: '小红书观山湖搜索中反复出现的贵州菜选择，适合第一晚多人聚餐。', tip: '观山湖店 · 出发前预约', image: foodImage, query: '贵厨 观山湖店 必点', mapCity: '贵阳' },
+  { id: 'daihuo', type: '美食', area: '贵阳住处周边', title: '逮火烤鸡', note: '观山湖笔记和评论都提到烤鸡与泡菜；旺季上菜和排队时间可能较长。', tip: '烤鸡 · 建议错峰', image: foodImage, query: '观山湖 逮火烤鸡', mapCity: '贵阳' },
+  { id: 'wanfenglin', type: '景点', area: '兴义', title: '万峰林·下纳灰村', note: '想走进稻田可直接到下纳灰村；想俯瞰八卦田和福字田，再选景区观光车。', tip: '建议半天 · 九月看稻田', image: xingyiImage, query: '万峰林 下纳灰村 九月', mapCity: '兴义' },
+  { id: 'fuyao-coffee', type: '景点', area: '兴义', title: '扶摇咖啡·吉隆堡机位', note: '小红书笔记推荐在这里拍与吉隆堡同框的城堡视角，适合顺路喝咖啡休息。', tip: '城堡机位 · 留意营业时间', image: xingyiImage, query: '兴义 扶摇咖啡 吉隆堡 机位', mapCity: '兴义' },
+  { id: 'malinghe', type: '景点', area: '兴义', title: '马岭河峡谷·打柴窝入口', note: '笔记推荐定位打柴窝入口，从桥上看瀑布群；九月雨后更壮观。', tip: '台阶较多 · 穿防滑鞋', image: xingyiImage, query: '马岭河峡谷 打柴窝入口 瀑布', mapCity: '兴义' },
+  { id: 'yuhuangding', type: '景点', area: '兴义', title: '玉皇顶·云上 House', note: '前夜下雨时更有机会看到云海，笔记建议清晨六点左右到云上 House 咖啡附近。', tip: '日出云海 · 早起看天气', image: xingyiImage, query: '玉皇顶 云上House 咖啡 日出云海', mapCity: '兴义' },
+  { id: 'maji-beef', type: '美食', area: '兴义', title: '马记小黄牛牛肉馆', note: '小红书兴义美食笔记的五星首推，干锅牛肉不辣、配菜足，也适合带小朋友。', tip: '干锅牛肉 · 人气较旺', image: foodImage, query: '兴义 马记小黄牛牛肉馆', mapCity: '兴义' },
+  { id: 'jingshi', type: '美食', area: '兴义', title: '景氏烙锅', note: '烙锅中间带酸汤，可涮菜也可直接喝；笔记最推荐烤小肠。', tip: '烙锅 · 适合两三人', image: foodImage, query: '兴义 景氏烙锅', mapCity: '兴义' },
+  { id: 'jiujiu-mutton', type: '美食', area: '兴义', title: '九九羊肉粉', note: '清汤偏酱香，薄荷和羊肉很搭；红烧口味微辣，想清爽可点清汤。', tip: '羊肉粉 · 本地早餐感', image: foodImage, query: '兴义 九九羊肉粉', mapCity: '兴义' },
+  { id: 'liuji-pie', type: '美食', area: '兴义', title: '刘记油煎肉饼', note: '花椒香明显、馅料足，是适合边走边吃的小吃选择。', tip: '油煎肉饼 · 趁热吃', image: foodImage, query: '兴义 刘记油煎肉饼', mapCity: '兴义' },
   { id: 'shuabatou', type: '美食', area: '兴义', title: '刷把头', note: '薄皮包住竹笋、肉末等馅料，形状像小刷把，蘸辣椒水吃。', tip: '兴义代表小吃', image: foodImage, query: '兴义 刷把头 老店', mapCity: '兴义' },
-  { id: 'chicken-tangyuan', type: '美食', area: '兴义', title: '鸡肉汤圆', note: '咸口糯米皮包鸡肉馅，配鸡汤和芝麻酱，软糯鲜香。', tip: '百年地方风味', image: foodImage, query: '兴义 鸡肉汤圆 推荐', mapCity: '兴义' },
 ];
 
 const itinerary = [
@@ -286,7 +291,7 @@ export default function Home() {
         </TabsContent>
       </Tabs>
 
-      <section className="source-note"><UtensilsCrossed /><p>资料参考贵州省博物馆、贵州省 A 级景区名录、万峰林景区官网和贵州广播电视台。小红书网页需登录才能读取搜索结果，站内保留了每个地点的精准搜索入口。</p></section>
+      <section className="source-note"><UtensilsCrossed /><p>景点信息参考官方资料；美食与拍照机位已在 2026 年 9 月登录小红书检索并提炼。每张卡片都保留精准搜索入口，价格、营业时间和天气请在出发前再确认。</p></section>
       <footer>景观照片：Wikimedia Commons · Ryedamien / Philippe Semanaz · 美食图为原创生成</footer>
     </main>
   );
