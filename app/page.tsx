@@ -189,12 +189,36 @@ export default function Home() {
 
   return (
     <main>
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="回到顶部"><span className="brand-mark">黔</span><span>贵州心动旅行簿</span></a>
-        <a className="saved-pill" href="#my-list"><Heart size={16} fill="currentColor" /> 已选 {saved.length + wishes.length}</a>
-      </header>
+      <section className="cinematic-hero" id="top">
+        <video
+          className="hero-video"
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-hidden="true"
+        >
+          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+        </video>
+        <nav className="glass-nav" aria-label="主导航">
+          <a className="cinematic-logo" href="#top" style={{ fontFamily: "'Instrument Serif', serif" }}>黔行纪<sup>®</sup></a>
+          <div className="hero-links">
+            <a className="active" href="#top">首页</a>
+            <a href="#discover-card">灵感</a>
+            <a href="#quick-look">目的地</a>
+            <a href="#my-list">心愿单</a>
+          </div>
+          <a className="liquid-glass nav-cta" href="#discover-card">开始旅程</a>
+        </nav>
+        <div className="hero-content">
+          <p className="hero-kicker animate-fade-rise">SHENZHEN · GUIYANG · XINGYI</p>
+          <h1 className="animate-fade-rise" style={{ fontFamily: "'Instrument Serif', serif" }}>让梦穿过寂静，<br /><em>落进贵州的山雾。</em></h1>
+          <p className="hero-subtext animate-fade-rise-delay">九月二十五日，从深圳北出发。我们把想吃的、想看的和偶然心动的地方，都收进这趟旅程。</p>
+          <a className="liquid-glass hero-cta animate-fade-rise-delay-2" href="#discover-card">开始挑选地点</a>
+        </div>
+      </section>
 
-      <Tabs defaultValue="discover" className="site-tabs" id="top">
+      <Tabs defaultValue="discover" className="site-tabs" id="discover-card">
         <TabsList className="nav-tabs" aria-label="旅行栏目">
           <TabsTrigger value="discover">刷一刷</TabsTrigger>
           <TabsTrigger value="itinerary">行程</TabsTrigger>
