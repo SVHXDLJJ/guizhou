@@ -1,5 +1,7 @@
-allowBuilds:
-  '@alicloud/openapi-core': false
-  esbuild: true
-  sharp: true
-  workerd: true
+packages:
+  - '.'
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - workerd
