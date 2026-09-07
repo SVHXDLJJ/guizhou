@@ -32,8 +32,8 @@ type Wish = {
   imageUrl: string | null;
 };
 
-const guiyangImage = 'https://commons.wikimedia.org/wiki/Special:FilePath/Guiyang_Skyline.jpg?width=1600';
-const xingyiImage = 'https://commons.wikimedia.org/wiki/Special:FilePath/Wan_Feng_Lin_River.jpg?width=1600';
+const guiyangImage = '/images/guiyang-skyline.jpg';
+const xingyiImage = '/images/wanfenglin-river.jpg';
 const foodImage = '/images/guizhou-foods.png';
 const xhsKarst = '/images/xhs-karst.webp';
 const xhsGuanshan = '/images/xhs-guanshan.webp';
@@ -88,6 +88,15 @@ export default function Home() {
   const savedPicks = picks.filter((pick) => saved.includes(pick.id));
 
   useEffect(() => {
+    try {
+      const local = JSON.parse(localStorage.getItem('guizhou-trip-state') ?? '{}') as { favorites?: string[]; wishes?: Wish[] };
+      if (local.favorites) setSaved(local.favorites);
+      if (local.wishes) setWishes(local.wishes);
+    } catch { /* ignore damaged local state */ }
+    if (document.documentElement.dataset.staticHosting === 'true') {
+      setMessage('选择会保存在这台手机里。');
+      return;
+    }
     fetch('/api/state')
       .then((response) => response.ok ? response.json() : Promise.reject())
       .then((data) => {
@@ -95,8 +104,16 @@ export default function Home() {
         setSaved(state.favorites);
         setWishes(state.wishes);
       })
-      .catch(() => setMessage('当前先在页面里选择，发布后会自动长期保存。'));
+      .catch(() => setMessage('选择会保存在这台手机里。'));
   }, []);
+
+  function saveLocal(favorites: string[], wishItems: Wish[] = wishes) {
+    try {
+      localStorage.setItem('guizhou-trip-state', JSON.stringify({ favorites, wishes: wishItems }));
+    } catch {
+      setMessage('这张照片较大，地点已加入当前页面；可换一张较小的图片再试。');
+    }
+  }
 
   function switchFilter(value: string) {
     setFilter(value as typeof filter);
@@ -129,7 +146,12 @@ export default function Home() {
   }
 
   async function setFavorite(id: string, shouldSave: boolean) {
-    setSaved((value) => shouldSave ? [...new Set([...value, id])] : value.filter((item) => item !== id));
+    setSaved((value) => {
+      const nextSaved = shouldSave ? [...new Set([...value, id])] : value.filter((item) => item !== id);
+      saveLocal(nextSaved);
+      return nextSaved;
+    });
+    if (document.documentElement.dataset.staticHosting === 'true') return;
     try {
       await fetch('/api/favorites', {
         method: 'POST',
@@ -158,24 +180,43 @@ export default function Home() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    const image = data.get('image');
+    const imageUrl = image instanceof File && image.size
+      ? await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = () => resolve('');
+          reader.readAsDataURL(image);
+        })
+      : '';
     const optimistic: Wish = {
       id: `draft-${Date.now()}`,
       title: String(data.get('title')),
       area: String(data.get('area')),
       category: String(data.get('category')),
       note: String(data.get('note')),
-      imageUrl: data.get('image') instanceof File && (data.get('image') as File).size
-        ? URL.createObjectURL(data.get('image') as File)
-        : null,
+      imageUrl: imageUrl || null,
     };
-    setWishes((value) => [optimistic, ...value]);
+    setWishes((value) => {
+      const nextWishes = [optimistic, ...value];
+      saveLocal(saved, nextWishes);
+      return nextWishes;
+    });
     setDialogOpen(false);
     form.reset();
+    if (document.documentElement.dataset.staticHosting === 'true') {
+      setMessage('地点和照片已保存在这台手机里。');
+      return;
+    }
     try {
       const response = await fetch('/api/wishes', { method: 'POST', body: data });
       if (!response.ok) throw new Error();
       const savedWish = await response.json() as Wish;
-      setWishes((value) => value.map((item) => item.id === optimistic.id ? savedWish : item));
+      setWishes((value) => {
+        const nextWishes = value.map((item) => item.id === optimistic.id ? savedWish : item);
+        saveLocal(saved, nextWishes);
+        return nextWishes;
+      });
       setMessage('新地点和照片已经收好啦！');
     } catch {
       setMessage('地点已放进当前清单；发布后可跨设备保存照片。');
@@ -183,13 +224,18 @@ export default function Home() {
   }
 
   async function removeWish(id: string) {
-    setWishes((value) => value.filter((item) => item.id !== id));
-    if (!id.startsWith('draft-')) {
+    setWishes((value) => {
+      const nextWishes = value.filter((item) => item.id !== id);
+      saveLocal(saved, nextWishes);
+      return nextWishes;
+    });
+    if (document.documentElement.dataset.staticHosting !== 'true' && !id.startsWith('draft-')) {
       await fetch(`/api/wishes?id=${encodeURIComponent(id)}`, { method: 'DELETE' }).catch(() => undefined);
     }
   }
 
   useEffect(() => {
+    if (document.documentElement.dataset.staticHosting === 'true') return;
     const context = (document as Document & {
       modelContext?: { registerTool?: (tool: Record<string, unknown>, options?: { signal: AbortSignal }) => void | Promise<void> };
     }).modelContext;
@@ -235,10 +281,10 @@ export default function Home() {
           playsInline
           aria-hidden="true"
         >
-          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+          <source src="/video/hero.mp4" type="video/mp4" />
         </video>
         <nav className="glass-nav" aria-label="主导航">
-          <a className="cinematic-logo" href="#top" style={{ fontFamily: "'Instrument Serif', serif" }}>黔行纪<sup>®</sup></a>
+          <a className="cinematic-logo" href="#top">黔行纪<sup>®</sup></a>
           <div className="hero-links">
             <a className="active" href="#top">首页</a>
             <a href="#discover-card">灵感</a>

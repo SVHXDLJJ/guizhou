@@ -1,0 +1,7 @@
+{
+  "name": "guizhou-trip-picks",
+  "assets": {
+    "directory": "./dist-static",
+    "notFoundStrategy": "singlePageApplication"
+  }
+}
